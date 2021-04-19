@@ -8,19 +8,25 @@
         <div class="card-panel teal blue lighten-5">
           <div class="row">
             <div class="row">
-              <form class="col s12">
+              <form @submit.prevent="submitClickHandler" class="col s12">
                 <div class="row">
-                  <div class="input-field col s6 offset-s3">
+                  <div class="input-field col s11">
                     <i class="material-icons prefix">email</i>
-                    <input id="icon_prefix" type="email" class="validate" />
+                    <input
+                      v-model.trim="email"
+                      id="icon_prefix"
+                      type="email"
+                      class="validate"
+                    />
                     <label for="icon_prefix">Email</label>
                   </div>
                 </div>
                 <div class="row">
-                  <div class="input-field col s6 offset-s3">
+                  <div class="input-field col s11">
                     <i class="material-icons prefix">https</i>
                     <input
                       id="icon_telephone"
+                      v-model="password"
                       type="password"
                       class="validate"
                     />
@@ -28,12 +34,12 @@
                   </div>
                 </div>
                 <div class="row">
-                  <div class="offset-s2 col s3">
+                  <div class="offset-s1 col s3">
                     <router-link to="/forgot_password" class="link"
                       >Забыли пароль?</router-link
                     >
                   </div>
-                  <div class="col s3 offset-s3">
+                  <div class="col s3 offset-s6">
                     <button
                       class="btn waves-effect waves-light"
                       type="submit"
@@ -45,7 +51,7 @@
                   </div>
                 </div>
                 <div class="row">
-                  <div class="offset-s2 col">
+                  <div class="offset-s1 col">
                     <router-link to="/register" class="link"
                       >Регистрация</router-link
                     >
@@ -64,10 +70,24 @@
 import * as M from "../../node_modules/materialize-css/dist/js/materialize.min";
 
 export default {
-  name: "Auth",
+  name: "Login",
   components: {},
+
+  data() {
+    return {
+      email: "",
+      password: "",
+    };
+  },
+
   created() {
     M.AutoInit();
+  },
+
+  methods: {
+    submitClickHandler() {
+      console.log(this.email);
+    },
   },
 };
 </script>

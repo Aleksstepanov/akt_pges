@@ -34,7 +34,7 @@
               </div>
               <div class="row">
                 <div class="col">
-                  <router-link to="/" class="link">
+                  <router-link to="/login" class="link">
                     <i class="material-icons right">keyboard_backspace</i>
                   </router-link>
                 </div>
