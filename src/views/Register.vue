@@ -7,28 +7,36 @@
       <div class="col s6 offset-s3">
         <div class="card-panel teal blue lighten-5">
           <div class="row">
-            <form class="col s12">
+            <Form
+              @submit="submitClickHandler"
+              :validation-schema="schema"
+              class="col s12"
+            >
               <div class="row">
                 <div class="input-field col s12">
                   <i class="material-icons prefix">person</i>
-                  <input id="last_name" type="text" class="validate" />
+                  <Field id="last_name" type="text" name="lastName" />
+                  <ErrorMessage name="lastName" class="ErrorText" />
                   <label for="last_name">Last Name</label>
                 </div>
                 <div class="input-field col s12">
                   <i class="material-icons prefix">perm_identity</i>
-                  <input id="first_name" type="text" class="validate" />
+                  <Field id="first_name" type="text" name="firstName" />
+                  <ErrorMessage name="firstName" class="ErrorText" />
                   <label for="first_name">First Name</label>
                 </div>
               </div>
               <div class="row">
                 <div class="input-field col s12">
                   <i class="material-icons prefix">email</i>
-                  <input id="icon_prefix" type="email" class="validate" />
+                  <Field id="icon_prefix" type="email" name="email" />
+                  <ErrorMessage name="email" class="ErrorText" />
                   <label for="icon_prefix">Email</label>
                 </div>
                 <div class="input-field col s12">
                   <i class="material-icons prefix">https</i>
-                  <input id="icon_telephone" type="password" class="validate" />
+                  <Field id="icon_telephone" type="password" name="password" />
+                  <ErrorMessage name="password" class="ErrorText" />
                   <label for="icon_telephone">Password</label>
                 </div>
               </div>
@@ -49,10 +57,59 @@
                   </button>
                 </div>
               </div>
-            </form>
+            </Form>
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+
+<script>
+import * as M from "../../node_modules/materialize-css/dist/js/materialize.min";
+import { Form, Field, ErrorMessage } from "vee-validate";
+import * as yup from "yup";
+
+export default {
+  name: "Login",
+  components: {
+    Form,
+    Field,
+    ErrorMessage,
+  },
+
+  setup() {
+    const schema = yup.object({
+      lastName: yup.string().required().min(3),
+      firstName: yup.string().required().min(3),
+      email: yup.string().required().email(),
+      password: yup.string().required().min(6),
+    });
+
+    return {
+      schema,
+    };
+  },
+
+  created() {
+    M.AutoInit();
+  },
+
+  methods: {
+    submitClickHandler(values) {
+      const user = {
+        email: values.email,
+        password: values.password,
+      };
+      console.log(user);
+    },
+  },
+};
+</script>
+
+<style lang="scss" scouped>
+.ErrorText {
+  margin-left: 45px;
+  color: red;
+}
+</style>

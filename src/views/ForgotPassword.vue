@@ -6,11 +6,16 @@
         <div class="col s6 offset-s3">
           <div class="card-panel teal blue lighten-5">
             <div class="row">
-              <form class="col s12">
+              <Form
+                class="col s12"
+                @submit="submitClickHandler"
+                :validation-schema="schema"
+              >
                 <div class="row">
                   <div class="input-field col s12">
                     <i class="material-icons prefix">email</i>
-                    <input id="icon_prefix" type="email" class="validate" />
+                    <Field id="icon_prefix" type="email" name="email" />
+                    <ErrorMessage name="email" class="ErrorText" />
                     <label for="icon_prefix">Email</label>
                   </div>
                 </div>
@@ -31,7 +36,7 @@
                     </button>
                   </div>
                 </div>
-              </form>
+              </Form>
             </div>
           </div>
         </div>
@@ -39,3 +44,40 @@
     </div>
   </div>
 </template>
+
+<script>
+import { Form, Field, ErrorMessage } from "vee-validate";
+import * as yup from "yup";
+
+export default {
+  name: "ForgotPassword",
+  components: {
+    Field,
+    Form,
+    ErrorMessage,
+  },
+
+  setup() {
+    const schema = yup.object({
+      email: yup.string().required().email(),
+    });
+
+    return {
+      schema,
+    };
+  },
+
+  methods: {
+    submitClickHandler(values) {
+      console.log(values.email);
+    },
+  },
+};
+</script>
+
+<style lang="scss" scouped>
+.ErrorText {
+  margin-left: 45px;
+  color: red;
+}
+</style>

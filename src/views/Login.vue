@@ -8,38 +8,39 @@
         <div class="card-panel teal blue lighten-5">
           <div class="row">
             <div class="row">
-              <form @submit.prevent="submitClickHandler" class="col s12">
+              <Form
+                @submit="submitClickHandler"
+                :validation-schema="schema"
+                class="col s12"
+              >
                 <div class="row">
                   <div class="input-field col s11">
                     <i class="material-icons prefix">email</i>
-                    <input
-                      v-model.trim="email"
-                      id="icon_prefix"
-                      type="email"
-                      class="validate"
-                    />
+
+                    <Field id="icon_prefix" type="email" name="email" />
+                    <ErrorMessage name="email" class="ErrorText" />
                     <label for="icon_prefix">Email</label>
                   </div>
                 </div>
                 <div class="row">
                   <div class="input-field col s11">
                     <i class="material-icons prefix">https</i>
-                    <input
+                    <Field
                       id="icon_telephone"
-                      v-model="password"
                       type="password"
-                      class="validate"
+                      name="password"
                     />
+                    <ErrorMessage name="password" class="ErrorText" />
                     <label for="icon_telephone">Password</label>
                   </div>
                 </div>
                 <div class="row">
-                  <div class="offset-s1 col s3">
+                  <div class="offset-s1 col s4">
                     <router-link to="/forgot_password" class="link"
                       >Забыли пароль?</router-link
                     >
                   </div>
-                  <div class="col s3 offset-s6">
+                  <div class="col offset-s3 s3">
                     <button
                       class="btn waves-effect waves-light"
                       type="submit"
@@ -57,7 +58,7 @@
                     >
                   </div>
                 </div>
-              </form>
+              </Form>
             </div>
           </div>
         </div>
@@ -68,15 +69,25 @@
 
 <script>
 import * as M from "../../node_modules/materialize-css/dist/js/materialize.min";
+import { Form, Field, ErrorMessage } from "vee-validate";
+import * as yup from "yup";
 
 export default {
   name: "Login",
-  components: {},
+  components: {
+    Form,
+    Field,
+    ErrorMessage,
+  },
 
-  data() {
+  setup() {
+    const schema = yup.object({
+      email: yup.string().required().email(),
+      password: yup.string().required().min(6),
+    });
+
     return {
-      email: "",
-      password: "",
+      schema,
     };
   },
 
@@ -85,9 +96,20 @@ export default {
   },
 
   methods: {
-    submitClickHandler() {
-      console.log(this.email);
+    submitClickHandler(values) {
+      const user = {
+        email: values.email,
+        password: values.password,
+      };
+      console.log(user);
     },
   },
 };
 </script>
+
+<style lang="scss" scouped>
+.ErrorText {
+  margin-left: 45px;
+  color: red;
+}
+</style>
