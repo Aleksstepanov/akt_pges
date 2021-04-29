@@ -102,7 +102,10 @@ export default {
       await firebase
         .auth()
         .signInWithEmailAndPassword(values.email, values.password)
-        .then(() => this.$router.push("/dashboard"));
+        .then(() => this.$router.push("/dashboard"))
+        .catch((err) => {
+          M.toast({ html: `${err.message}` });
+        });
     },
   },
 };

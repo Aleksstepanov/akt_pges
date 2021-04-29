@@ -17,7 +17,7 @@
     </li>
     <li class="divider"></li>
     <li><a href="sass.html">Sass</a></li>
-    <li><a href="collapsible.html">Javascript</a></li>
+    <li><a href="#" @click.stop="ExitClickHandler">Выход</a></li>
   </ul>
 </template>
 
@@ -49,7 +49,10 @@ export default {
       await firebase
         .auth()
         .signOut()
-        .then(() => this.$router.push("/login"));
+        .then(() => {
+          this.$router.push("/login");
+        });
+      M.toast({ html: "Вы вышли из системы" });
     },
   },
 };
