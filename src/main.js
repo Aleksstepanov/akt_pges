@@ -6,4 +6,10 @@ import router from "./router";
 
 firebase.initializeApp(firebaseConfig);
 
-createApp(App).use(router).mount("#app");
+let app;
+
+firebase.auth().onAuthStateChanged(() => {
+  if (!app) {
+    app = createApp(App).use(router).mount("#app");
+  }
+});

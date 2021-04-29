@@ -1,7 +1,9 @@
 <template>
   <nav>
     <div class="nav-wrapper orange darken-1">
-      <a href="#!" class="user-name">{{ user }}</a>
+      <a href="#!" class="user-name"
+        >{{ user }} <span class="black-text">{{ date }}</span></a
+      >
       <a href="#" data-target="mobile-demo" class="sidenav-trigger"
         ><i class="material-icons">menu</i></a
       >
@@ -32,6 +34,9 @@ export default {
   data() {
     return {
       user: "",
+      date: new Date(),
+      interval: null,
+      sidenav: null,
     };
   },
 
@@ -40,7 +45,17 @@ export default {
   },
 
   mounted() {
-    M.Sidenav.init(this.$refs.sidenav);
+    this.interval = setInterval(() => {
+      this.date = Intl.DateTimeFormat("ru-RU", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      }).format(new Date());
+    }, 1000);
+    this.sidenav = M.Sidenav.init(this.$refs.sidenav);
     M.Modal.init(this.$refs.modalUser);
   },
 
@@ -54,6 +69,13 @@ export default {
         });
       M.toast({ html: "Вы вышли из системы" });
     },
+  },
+
+  unmounted() {
+    clearInterval(this.interval);
+    if (this.sidenav && this.sidenav.destroy) {
+      this.sidenav.destroy();
+    }
   },
 };
 </script>
