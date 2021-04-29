@@ -1,9 +1,9 @@
 <template>
   <div class="container">
     <div class="row">
-      <h2 class="center-align">Восстановление пароля</h2>
+      <h3 class="center-align">Восстановление пароля</h3>
       <div class="row">
-        <div class="col s6 offset-s3">
+        <div class="col s12">
           <div class="card-panel teal blue lighten-5">
             <div class="row">
               <Form
@@ -25,7 +25,7 @@
                       <i class="material-icons right">keyboard_backspace</i>
                     </router-link>
                   </div>
-                  <div class="offset-s5 col s3">
+                  <div class="col s3 offset-s3">
                     <button
                       class="btn waves-effect waves-light"
                       type="submit"

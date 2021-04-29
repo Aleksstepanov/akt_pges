@@ -1,14 +1,14 @@
 <template>
   <div class="container">
     <div class="row">
-      <h2 class="center-align">Регистрация</h2>
+      <h3 class="center-align">Регистрация</h3>
     </div>
     <div class="row">
-      <div class="col s6 offset-s3">
+      <div class="col s12">
         <div class="card-panel teal blue lighten-5">
           <div class="row">
             <Form
-              @submit="submitClickHandler"
+              @submit="registerClickHandler"
               :validation-schema="schema"
               class="col s12"
             >
@@ -41,12 +41,12 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col">
+                <div class="offset-s1 col s1">
                   <router-link to="/login" class="link">
                     <i class="material-icons right">keyboard_backspace</i>
                   </router-link>
                 </div>
-                <div class="offset-s5 col s3">
+                <div class="col s3 offset-s4 m3 offset-m6">
                   <button
                     class="btn waves-effect waves-light"
                     type="submit"
@@ -69,6 +69,8 @@
 import * as M from "../../node_modules/materialize-css/dist/js/materialize.min";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
+import firebase from "firebase/app";
+import "firebase/auth";
 
 export default {
   name: "Login",
@@ -96,12 +98,18 @@ export default {
   },
 
   methods: {
-    submitClickHandler(values) {
-      const user = {
-        email: values.email,
-        password: values.password,
-      };
-      console.log(user);
+    async registerClickHandler(values) {
+      await firebase
+        .auth()
+        .createUserWithEmailAndPassword(values.email, values.password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          user.updateProfile({
+            displayName: `${values.lastName} ${values.firstName}`,
+          });
+        })
+        .then(() => this.$router.push("/dashboard"))
+        .catch((err) => alert(err.message));
     },
   },
 };
