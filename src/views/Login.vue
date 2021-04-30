@@ -154,13 +154,11 @@ export default {
   methods: {
     async loginClickHandler(values) {
       this.isLoader = true;
-      console.log(this.isLoader);
       await firebase
         .auth()
         .signInWithEmailAndPassword(values.email, values.password)
         .then(() => {
           this.isLoader = false;
-          console.log(this.isLoader);
         })
         .then(() => this.$router.push("/home/dashboard"))
         .catch((err) => {
