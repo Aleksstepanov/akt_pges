@@ -1,13 +1,13 @@
 <template>
   <Navbar />
-  <h2>Вы в системе</h2>
+  <router-view />
 </template>
 
 <script>
 import Navbar from "./NavBar.vue";
 
 export default {
-  name: "DashBoard",
+  name: "Home",
   components: {
     Navbar,
   },

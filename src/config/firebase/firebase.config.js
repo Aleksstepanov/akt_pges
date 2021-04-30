@@ -1,6 +1,7 @@
 export default {
   apiKey: "AIzaSyCAWmdQnns5WBiwsEcR_5XWbnROaJ9zBak",
   authDomain: "aktpges.firebaseapp.com",
+  databaseURL: "https://aktpges-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "aktpges",
   storageBucket: "aktpges.appspot.com",
   messagingSenderId: "964970571719",

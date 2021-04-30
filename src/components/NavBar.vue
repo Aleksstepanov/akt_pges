@@ -1,26 +1,34 @@
 <template>
+  <ul id="dropdown1" class="dropdown-content orange lighten-3">
+    <li>
+      <router-link to="/home/profile" class="black-text">{{
+        user
+      }}</router-link>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <router-link to="/home/dashboard" class="black-text"
+        >Мои акты</router-link
+      >
+    </li>
+    <li><a href="#!" class="black-text" @click="ExitClickHandler">Выход</a></li>
+  </ul>
   <nav>
     <div class="nav-wrapper orange darken-1">
-      <a href="#!" class="user-name"
-        >{{ user }} <span class="black-text">{{ date }}</span></a
-      >
-      <a href="#" data-target="mobile-demo" class="sidenav-trigger"
-        ><i class="material-icons">menu</i></a
-      >
-      <ul class="right hide-on-med-and-down">
-        <li><a @click="ExitClickHandler">Выход</a></li>
+      <a href="#!" class="logo">{{ date }}</a>
+      <ul class="right">
+        <li>
+          <a
+            class="dropdown-trigger"
+            href="#!"
+            data-target="dropdown1"
+            ref="dropdown"
+            ><i class="material-icons right">arrow_drop_down_circle</i>
+          </a>
+        </li>
       </ul>
     </div>
   </nav>
-
-  <ul class="sidenav orange darken-1" id="mobile-demo" ref="sidenav">
-    <li>
-      <a class="white-text">{{ user }}</a>
-    </li>
-    <li class="divider"></li>
-    <li><a href="sass.html">Sass</a></li>
-    <li><a href="#" @click.stop="ExitClickHandler">Выход</a></li>
-  </ul>
 </template>
 
 <script>
@@ -36,7 +44,7 @@ export default {
       user: "",
       date: new Date(),
       interval: null,
-      sidenav: null,
+      dropdown: null,
     };
   },
 
@@ -55,8 +63,10 @@ export default {
         second: "2-digit",
       }).format(new Date());
     }, 1000);
-    this.sidenav = M.Sidenav.init(this.$refs.sidenav);
-    M.Modal.init(this.$refs.modalUser);
+    this.dropdown = M.Dropdown.init(this.$refs.dropdown, {
+      closeOnClick: false,
+      hover: true,
+    });
   },
 
   methods: {
@@ -73,8 +83,8 @@ export default {
 
   unmounted() {
     clearInterval(this.interval);
-    if (this.sidenav && this.sidenav.destroy) {
-      this.sidenav.destroy();
+    if (this.dropdown && this.dropdown.destroy) {
+      this.dropdown.destroy();
     }
   },
 };
@@ -84,5 +94,8 @@ export default {
 .user-name {
   font-size: 1rem;
   margin-left: 1rem;
+}
+.date {
+  font-size: 1rem;
 }
 </style>

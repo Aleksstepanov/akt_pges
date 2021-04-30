@@ -21,12 +21,24 @@ const routes = [
     component: () => import("../views/ForgotPassword.vue"),
   },
   {
-    path: "/dashboard",
-    name: "DashBoard",
-    component: () => import("../components/DashBoard.vue"),
+    path: "/home",
+    name: "Home",
+    component: () => import("../components/Home.vue"),
     meta: {
       authRequres: true,
     },
+    children: [
+      {
+        path: "profile",
+        name: "profile",
+        component: () => import("../views/Profile.vue"),
+      },
+      {
+        path: "dashboard",
+        name: "dashboard",
+        component: () => import("../views/DashBoard.vue"),
+      },
+    ],
   },
 ];
 

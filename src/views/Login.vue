@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" v-if="!isLoader">
     <div class="row">
       <h3 class="center-align">Авторизация</h3>
     </div>
@@ -65,6 +65,57 @@
       </div>
     </div>
   </div>
+  <div class="container" v-else>
+    <div class="preloader-wrapper big active">
+      <div class="spinner-layer spinner-blue">
+        <div class="circle-clipper left">
+          <div class="circle"></div>
+        </div>
+        <div class="gap-patch">
+          <div class="circle"></div>
+        </div>
+        <div class="circle-clipper right">
+          <div class="circle"></div>
+        </div>
+      </div>
+
+      <div class="spinner-layer spinner-red">
+        <div class="circle-clipper left">
+          <div class="circle"></div>
+        </div>
+        <div class="gap-patch">
+          <div class="circle"></div>
+        </div>
+        <div class="circle-clipper right">
+          <div class="circle"></div>
+        </div>
+      </div>
+
+      <div class="spinner-layer spinner-yellow">
+        <div class="circle-clipper left">
+          <div class="circle"></div>
+        </div>
+        <div class="gap-patch">
+          <div class="circle"></div>
+        </div>
+        <div class="circle-clipper right">
+          <div class="circle"></div>
+        </div>
+      </div>
+
+      <div class="spinner-layer spinner-green">
+        <div class="circle-clipper left">
+          <div class="circle"></div>
+        </div>
+        <div class="gap-patch">
+          <div class="circle"></div>
+        </div>
+        <div class="circle-clipper right">
+          <div class="circle"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -76,6 +127,7 @@ import "firebase/auth";
 
 export default {
   name: "Login",
+
   components: {
     Form,
     Field,
@@ -83,6 +135,7 @@ export default {
   },
 
   setup() {
+    const isLoader = false;
     const schema = yup.object({
       email: yup.string().required().email(),
       password: yup.string().required().min(6),
@@ -90,6 +143,7 @@ export default {
 
     return {
       schema,
+      isLoader,
     };
   },
 
@@ -99,10 +153,16 @@ export default {
 
   methods: {
     async loginClickHandler(values) {
+      this.isLoader = true;
+      console.log(this.isLoader);
       await firebase
         .auth()
         .signInWithEmailAndPassword(values.email, values.password)
-        .then(() => this.$router.push("/dashboard"))
+        .then(() => {
+          this.isLoader = false;
+          console.log(this.isLoader);
+        })
+        .then(() => this.$router.push("/home/dashboard"))
         .catch((err) => {
           M.toast({ html: `${err.message}` });
         });
