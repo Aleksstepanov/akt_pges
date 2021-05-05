@@ -33,11 +33,16 @@
                   <ErrorMessage name="email" class="ErrorText" />
                   <label for="icon_prefix">Email</label>
                 </div>
-                <div class="input-field col s12">
+                <div class="input-field col s6">
                   <i class="material-icons prefix">https</i>
                   <Field id="icon_telephone" type="password" name="password" />
                   <ErrorMessage name="password" class="ErrorText" />
                   <label for="icon_telephone">Password</label>
+                </div>
+                <div class="input-field col s6">
+                  <Field id="start_count" type="text" name="start_count" />
+                  <ErrorMessage name="start_count" class="ErrorText" />
+                  <label for="start_count">Начало отсчета</label>
                 </div>
               </div>
               <div class="row">
@@ -71,6 +76,7 @@ import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 import firebase from "firebase/app";
 import "firebase/auth";
+import "firebase/database";
 
 export default {
   name: "Login",
@@ -86,6 +92,7 @@ export default {
       firstName: yup.string().required().min(3),
       email: yup.string().required().email(),
       password: yup.string().required().min(6),
+      start_count: yup.number().required().min(1),
     });
 
     return {
@@ -108,7 +115,15 @@ export default {
             displayName: `${values.lastName} ${values.firstName}`,
           });
         })
-        .then(() => this.$router.push("/dashboard"))
+        .then(async () => {
+          const db = firebase.database();
+          await db.ref(`/users/${firebase.auth().currentUser.uid}`).set({
+            displayName: firebase.auth().currentUser.displayName,
+            email: firebase.auth().currentUser.email,
+            start_count: values.start_count,
+          });
+        })
+        .then(() => this.$router.push("/home/dashboard"))
         .catch((err) => alert(err.message));
     },
   },

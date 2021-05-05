@@ -124,6 +124,7 @@ import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 import firebase from "firebase/app";
 import "firebase/auth";
+import "firebase/database";
 
 export default {
   name: "Login",
@@ -159,6 +160,14 @@ export default {
         .signInWithEmailAndPassword(values.email, values.password)
         .then(() => {
           this.isLoader = false;
+        })
+        .then(async () => {
+          const db = await firebase.database();
+          const { uid } = await firebase.auth().currentUser;
+          db.ref(`users/${uid}`).on("value", async (snapshot) => {
+            const data = await snapshot.val();
+            localStorage.setItem("AKT_PGES", JSON.stringify(data));
+          });
         })
         .then(() => this.$router.push("/home/dashboard"))
         .catch((err) => {

@@ -11,6 +11,9 @@
         >Мои акты</router-link
       >
     </li>
+    <li>
+      <router-link to="/home/add" class="black-text">Добавить акт</router-link>
+    </li>
     <li><a href="#!" class="black-text" @click="ExitClickHandler">Выход</a></li>
   </ul>
   <nav>
