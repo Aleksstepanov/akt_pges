@@ -53,37 +53,12 @@ export default {
     M.Datepicker.init(this.$refs.datepicker, datapickerConfig);
   },
   methods: {
-    async btnAddClickHandler(values) {
-      const snapshot = JSON.parse(localStorage.getItem("AKT_PGES"));
-      const year = Intl.DateTimeFormat("ru-RU", {
-        year: "numeric",
-      })
-        .format(new Date())
-        .toString();
-      const time = Intl.DateTimeFormat("ru-RU", {
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-      }).format(new Date());
+    async btnAddClickHandler() {
+      const snapshotAkts = JSON.parse(localStorage.getItem("AKT_PGES_AKTS"));
+      const year = new Date().getFullYear();
+      const akts = snapshotAkts[year.toString()];
 
-      if (snapshot?.akts) {
-        console.log(year);
-      } else {
-        snapshot.akts = {
-          [year]: [
-            {
-              akt: values.new_akt,
-              createRecord: time,
-              date: values.date,
-            },
-          ],
-        };
-        console.log(snapshot);
-        console.log(values.date);
-      }
+      console.log(akts);
     },
   },
 };

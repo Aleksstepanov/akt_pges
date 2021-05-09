@@ -1,5 +1,6 @@
 <template>
   <h4>Мои акты</h4>
+  <hr />
 </template>
 
 <script>

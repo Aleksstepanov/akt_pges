@@ -13,13 +13,13 @@
               class="col s12"
             >
               <div class="row">
-                <div class="input-field col s12">
+                <div class="input-field col s6">
                   <i class="material-icons prefix">person</i>
                   <Field id="last_name" type="text" name="lastName" />
                   <ErrorMessage name="lastName" class="ErrorText" />
                   <label for="last_name">Last Name</label>
                 </div>
-                <div class="input-field col s12">
+                <div class="input-field col s6">
                   <i class="material-icons prefix">perm_identity</i>
                   <Field id="first_name" type="text" name="firstName" />
                   <ErrorMessage name="firstName" class="ErrorText" />
@@ -27,7 +27,7 @@
                 </div>
               </div>
               <div class="row">
-                <div class="input-field col s12">
+                <div class="input-field col s6">
                   <i class="material-icons prefix">email</i>
                   <Field id="icon_prefix" type="email" name="email" />
                   <ErrorMessage name="email" class="ErrorText" />
@@ -39,10 +39,30 @@
                   <ErrorMessage name="password" class="ErrorText" />
                   <label for="icon_telephone">Password</label>
                 </div>
-                <div class="input-field col s6">
+                <div class="input-field col s4">
+                  <i class="material-icons prefix">directions_run</i>
                   <Field id="start_count" type="text" name="start_count" />
                   <ErrorMessage name="start_count" class="ErrorText" />
                   <label for="start_count">Начало отсчета</label>
+                </div>
+                <div class="input-field col s4">
+                  <i class="material-icons prefix">domain</i>
+                  <select
+                    ref="select"
+                    as="select"
+                    name="subdivision"
+                    v-model="subdivision"
+                  >
+                    <option value="ОЭПУЭ">ОЭПУЭ</option>
+                    <option value="ОАИИС">ОАИИС</option>
+                  </select>
+                  <label>Подразделение</label>
+                </div>
+                <div class="input-field col s4">
+                  <i class="material-icons prefix">star_border</i>
+                  <Field id="number_id" type="text" name="numberID" />
+                  <ErrorMessage name="numberID" class="ErrorText" />
+                  <label for="number_id">Индивид. номер</label>
                 </div>
               </div>
               <div class="row">
@@ -93,19 +113,35 @@ export default {
       email: yup.string().required().email(),
       password: yup.string().required().min(6),
       start_count: yup.number().required().min(1),
+      numberID: yup.number().required(),
     });
-
+    const subdivision = "ОЭПУЭ";
     return {
       schema,
+      subdivision,
     };
   },
 
-  created() {
-    M.AutoInit();
+  data() {
+    return {
+      dropdown: null,
+    };
+  },
+
+  mounted() {
+    this.dropdown = M.FormSelect.init(this.$refs.select);
+  },
+
+  unmounted() {
+    if (this.dropdown && this.dropdown.destroy) {
+      this.dropdown.destroy();
+    }
   },
 
   methods: {
     async registerClickHandler(values) {
+      const db = firebase.database();
+      console.log(values.number_id);
       await firebase
         .auth()
         .createUserWithEmailAndPassword(values.email, values.password)
@@ -116,11 +152,32 @@ export default {
           });
         })
         .then(async () => {
-          const db = firebase.database();
           await db.ref(`/users/${firebase.auth().currentUser.uid}`).set({
-            displayName: firebase.auth().currentUser.displayName,
             email: firebase.auth().currentUser.email,
             start_count: values.start_count,
+            subdivision: this.subdivision,
+            date_register: Intl.DateTimeFormat("ru-RU", {
+              day: "2-digit",
+              month: "long",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+            }).format(new Date()),
+            number_id: values.numberID,
+          });
+        })
+        .then(() => {
+          console.log(new Date().getFullYear());
+          db.ref(`/akts/${firebase.auth().currentUser.uid}`).set({
+            [new Date().getFullYear()]: {
+              [values.start_count]: {
+                object: "",
+                date_akt: "",
+                number_akt: "",
+                date_create_record: "",
+              },
+            },
           });
         })
         .then(() => this.$router.push("/home/dashboard"))

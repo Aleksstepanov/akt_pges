@@ -101,4 +101,7 @@ export default {
 .date {
   font-size: 1rem;
 }
+.logo {
+  margin-left: 1rem;
+}
 </style>
