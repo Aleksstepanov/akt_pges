@@ -18,9 +18,13 @@
           class="datepicker col s2"
           ref="datepicker"
           name="date"
+          v-model="dateAkt"
         />
         <ErrorMessage name="date" class="ErrorText" />
         <button type="submit" class="col s3 btn offset-s1">Добавить</button>
+      </div>
+      <div class="row" v-if="createRecord">
+        <h4>{{ number_akt }}</h4>
       </div>
     </Form>
   </div>
@@ -31,6 +35,9 @@ import { Field, Form, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 import * as M from "../../node_modules/materialize-css/dist/js/materialize.min";
 import datapickerConfig from "../config/datapicker.config.js";
+import firebase from "firebase/app";
+import "firebase/database";
+import "firebase/auth";
 
 export default {
   name: "Add",
@@ -55,11 +62,15 @@ export default {
   data() {
     return {
       akts: null,
+      user: null,
+      createRecord: false,
+      dateAkt: new Date(),
     };
   },
 
   created() {
     this.akts = JSON.parse(localStorage.getItem("AKT_PGES_AKTS"));
+    this.user = JSON.parse(localStorage.getItem("AKT_PGES_USER"));
   },
 
   mounted() {
@@ -69,14 +80,79 @@ export default {
   methods: {
     async btnAddClickHandler(values) {
       const newAkt = {
-        date_akt: values.date,
-        date_create_record: new Date(),
-        number_akt: "",
+        dateCreateAkt: Intl.DateTimeFormat("ru-RU", {
+          day: "2-digit",
+          month: "long",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        }).format(this.dateAkt),
+        dateCreateRecord: Intl.DateTimeFormat("ru-RU", {
+          day: "2-digit",
+          month: "long",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        }).format(new Date()),
         object: values.new_akt,
+        numberAkt: "",
       };
-      console.log(Object.values(this.akts[this.lastYear][this.lastAkt]));
-      console.log(this.akts[this.lastYear][this.lastAkt]);
-      console.log(newAkt);
+
+      this.createRecord = true;
+
+      if (!this.akts) {
+        await firebase
+          .database()
+          .ref(
+            `akts/${
+              firebase.auth().currentUser.uid
+            }/${new Date().getFullYear()}/${this.user.start_count}/`
+          )
+          .set(newAkt);
+
+        this.akts = {
+          [new Date().getFullYear()]: {
+            [this.user.start_count]: newAkt,
+          },
+        };
+        localStorage.setItem("AKT_PGES_AKTS", this.akts);
+      }
+
+      console.log(Object.keys(this.akts));
+      console.log(
+        Object.prototype.hasOwnProperty.call(this.akts, [
+          new Date().getFullYear(),
+        ])
+      );
+      // const newAkt = {
+      //   date_akt: this.dateAkt,
+      //   date_create_record: new Date(),
+      //   number_akt: this.number_akt,
+      //   object: values.new_akt,
+      // };
+
+      // this.createRecord = true;
+      // Object.assign(this.akts[this.lastYear][this.lastAkt], newAkt);
+
+      // localStorage.setItem("AKT_PGES_AKTS", this.akts);
+      // console.log(this.akts);
+      // await firebase
+      //   .database()
+      //   .ref(
+      //     `akts/${firebase.auth().currentUser.uid}/${this.lastYear}/${
+      //       this.lastAkt
+      //     }`
+      //   )
+      //   .set(newAkt);
+      // await firebase
+      //   .database()
+      //   .ref(`akts/${firebase.auth().currentUser.uid}`)
+      //   .on("value", (snapshot) => {
+      //     const data = snapshot.val();
+      //     console.log(data);
+      //   });
     },
 
     maxElem(arr) {
@@ -106,6 +182,11 @@ export default {
 
     lastAkt() {
       return this.maxElem(this.stringToNumberOfArray(this.getArrayOfAkts));
+    },
+
+    number_akt() {
+      const { number_id, start_count } = this.user;
+      return `Д-ОЭПУЭ-${number_id}-${new Date().getFullYear()}-${start_count}`;
     },
   },
 };

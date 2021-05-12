@@ -141,7 +141,6 @@ export default {
   methods: {
     async registerClickHandler(values) {
       const db = firebase.database();
-      console.log(values.number_id);
       await firebase
         .auth()
         .createUserWithEmailAndPassword(values.email, values.password)
@@ -165,19 +164,6 @@ export default {
               second: "2-digit",
             }).format(new Date()),
             number_id: values.numberID,
-          });
-        })
-        .then(() => {
-          console.log(new Date().getFullYear());
-          db.ref(`/akts/${firebase.auth().currentUser.uid}`).set({
-            [new Date().getFullYear()]: {
-              [values.start_count]: {
-                object: "",
-                date_akt: "",
-                number_akt: "",
-                date_create_record: "",
-              },
-            },
           });
         })
         .then(() => this.$router.push("/home/dashboard"))
