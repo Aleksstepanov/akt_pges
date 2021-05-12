@@ -128,10 +128,6 @@ export default {
             }`
           )
           .set(newAkt);
-
-        // (this.akts[new Date().getFullYear()] = {
-        //   [this.user.start_count]: newAkt,
-        // }),
         Object.assign(this.akts[this.lastYear], { [this.lastAkt + 1]: newAkt });
         console.log(this.akts);
         localStorage.setItem("AKT_PGES_AKTS", this.akts);
