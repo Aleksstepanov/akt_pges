@@ -64,12 +64,13 @@ export default {
       akts: null,
       user: null,
       createRecord: false,
-      dateAkt: new Date(),
+      dateAkt: "",
     };
   },
 
   created() {
     this.akts = JSON.parse(localStorage.getItem("AKT_PGES_AKTS"));
+    console.log(this.akts);
     this.user = JSON.parse(localStorage.getItem("AKT_PGES_USER"));
   },
 
@@ -97,7 +98,7 @@ export default {
           second: "2-digit",
         }).format(new Date()),
         object: values.new_akt,
-        numberAkt: "",
+        numberAkt: this.number_akt,
       };
 
       this.createRecord = true;
@@ -118,41 +119,23 @@ export default {
           },
         };
         localStorage.setItem("AKT_PGES_AKTS", this.akts);
+      } else {
+        await firebase
+          .database()
+          .ref(
+            `akts/${firebase.auth().currentUser.uid}/${this.lastYear}/${
+              this.lastAkt + 1
+            }`
+          )
+          .set(newAkt);
+
+        // (this.akts[new Date().getFullYear()] = {
+        //   [this.user.start_count]: newAkt,
+        // }),
+        Object.assign(this.akts[this.lastYear], { [this.lastAkt + 1]: newAkt });
+        console.log(this.akts);
+        localStorage.setItem("AKT_PGES_AKTS", this.akts);
       }
-
-      console.log(Object.keys(this.akts));
-      console.log(
-        Object.prototype.hasOwnProperty.call(this.akts, [
-          new Date().getFullYear(),
-        ])
-      );
-      // const newAkt = {
-      //   date_akt: this.dateAkt,
-      //   date_create_record: new Date(),
-      //   number_akt: this.number_akt,
-      //   object: values.new_akt,
-      // };
-
-      // this.createRecord = true;
-      // Object.assign(this.akts[this.lastYear][this.lastAkt], newAkt);
-
-      // localStorage.setItem("AKT_PGES_AKTS", this.akts);
-      // console.log(this.akts);
-      // await firebase
-      //   .database()
-      //   .ref(
-      //     `akts/${firebase.auth().currentUser.uid}/${this.lastYear}/${
-      //       this.lastAkt
-      //     }`
-      //   )
-      //   .set(newAkt);
-      // await firebase
-      //   .database()
-      //   .ref(`akts/${firebase.auth().currentUser.uid}`)
-      //   .on("value", (snapshot) => {
-      //     const data = snapshot.val();
-      //     console.log(data);
-      //   });
     },
 
     maxElem(arr) {
@@ -177,6 +160,7 @@ export default {
     },
 
     getArrayOfAkts() {
+      console.log(Object.keys(this.akts[this.lastYear]));
       return Object.keys(this.akts[this.lastYear]);
     },
 
@@ -185,8 +169,15 @@ export default {
     },
 
     number_akt() {
-      const { number_id, start_count } = this.user;
-      return `Д-ОЭПУЭ-${number_id}-${new Date().getFullYear()}-${start_count}`;
+      if (!this.akts) {
+        const { number_id, start_count } = this.user;
+        return `Д-ОЭПУЭ-${number_id}-${new Date().getFullYear()}-${start_count}`;
+      } else {
+        const { number_id } = this.user;
+        return `Д-ОЭПУЭ-${number_id}-${new Date().getFullYear()}-${
+          this.lastAkt
+        }`;
+      }
     },
   },
 };
