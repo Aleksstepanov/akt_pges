@@ -1,7 +1,7 @@
 <template>
   <h4>Мои акты</h4>
   <hr />
-  <table>
+  <table v-if="isLoading">
     <thead>
       <tr>
         <th>№ п/п</th>
@@ -33,6 +33,8 @@ export default {
   data() {
     return {
       akts: null,
+      quantity: 0,
+      isLoading: false,
     };
   },
 
@@ -41,16 +43,19 @@ export default {
     await db
       .ref(`users/${firebase.auth().currentUser.uid}`)
       .on("value", async (snapshot) => {
-        const data = snapshot.val();
+        const data = await snapshot.val();
+        const { quantity } = await data;
+        this.quantity = quantity;
         localStorage.setItem("AKT_PGES_USER", JSON.stringify(data));
       });
     await db
       .ref(`akts/${firebase.auth().currentUser.uid}`)
       .on("value", async (snapshot) => {
-        const data = snapshot.val();
+        const data = await snapshot.val();
         localStorage.setItem("AKT_PGES_AKTS", JSON.stringify(data));
+        this.akts = data;
+        this.isLoading = true;
       });
-    this.akts = JSON.parse(localStorage.getItem("AKT_PGES_AKTS"));
   },
 
   computed: {

@@ -164,6 +164,7 @@ export default {
               second: "2-digit",
             }).format(new Date()),
             number_id: values.numberID,
+            quantity: "0",
           });
         })
         .then(() => this.$router.push("/home/dashboard"))

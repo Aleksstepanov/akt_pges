@@ -65,6 +65,8 @@ export default {
       user: null,
       createRecord: false,
       dateAkt: "",
+      quantity: 0,
+      datapicker: null,
     };
   },
 
@@ -74,11 +76,23 @@ export default {
   },
 
   mounted() {
-    M.Datepicker.init(this.$refs.datepicker, datapickerConfig);
+    this.datapicker = M.Datepicker.init(
+      this.$refs.datepicker,
+      datapickerConfig
+    );
   },
 
   methods: {
     async btnAddClickHandler(values) {
+      await firebase
+        .database()
+        .ref(`users/${firebase.auth().currentUser.uid}`)
+        .on("value", async (snapshot) => {
+          const data = snapshot.val();
+          const { quantity } = data;
+          this.quantity = +quantity;
+        });
+
       const newAkt = {
         dateCreateAkt: Intl.DateTimeFormat("ru-RU", {
           day: "2-digit",
@@ -100,9 +114,10 @@ export default {
         numberAkt: this.number_akt,
       };
 
+      console.log(this.dateAkt);
       this.createRecord = true;
 
-      if (!this.akts) {
+      if (this.quantity === 0) {
         await firebase
           .database()
           .ref(
@@ -117,7 +132,7 @@ export default {
             [this.user.start_count]: newAkt,
           },
         };
-        localStorage.setItem("AKT_PGES_AKTS", this.akts);
+        localStorage.setItem("AKT_PGES_AKTS", JSON.stringify(this.akts));
       } else {
         await firebase
           .database()
@@ -128,9 +143,13 @@ export default {
           )
           .set(newAkt);
         Object.assign(this.akts[this.lastYear], { [this.lastAkt + 1]: newAkt });
-        console.log(this.akts);
-        localStorage.setItem("AKT_PGES_AKTS", this.akts);
+        localStorage.setItem("AKT_PGES_AKTS", JSON.stringify(this.akts));
       }
+      this.quantity += 1;
+      await firebase
+        .database()
+        .ref(`users/${firebase.auth().currentUser.uid}`)
+        .update({ quantity: this.quantity.toString() });
     },
 
     maxElem(arr) {
@@ -155,7 +174,6 @@ export default {
     },
 
     getArrayOfAkts() {
-      console.log(Object.keys(this.akts[this.lastYear]));
       return Object.keys(this.akts[this.lastYear]);
     },
 
@@ -164,16 +182,22 @@ export default {
     },
 
     number_akt() {
-      if (!this.akts) {
-        const { number_id, start_count } = this.user;
-        return `Д-ОЭПУЭ-${number_id}-${new Date().getFullYear()}-${start_count}`;
+      const year = new Date().getFullYear();
+      const { number_id, start_count } = this.user;
+      const oldAkt = Number(start_count) + Number(this.quantity);
+      console.log(oldAkt);
+      if (this.quantity === 0) {
+        return `Д-ОЭПУЭ-${number_id}-${year}-${oldAkt}`;
       } else {
-        const { number_id } = this.user;
-        return `Д-ОЭПУЭ-${number_id}-${new Date().getFullYear()}-${
-          this.lastAkt
-        }`;
+        return `Д-ОЭПУЭ-${number_id}-${year}-${oldAkt + 1}`;
       }
     },
+  },
+
+  unmounted() {
+    if (this.datapicker && this.datapicker.destroy) {
+      this.datapicker.destroy();
+    }
   },
 };
 </script>
