@@ -12,26 +12,21 @@
     </thead>
 
     <tbody>
-      <tr>
-        <td>{{ getYearArray }}</td>
-        <td>Eclair</td>
-        <td>$0.87</td>
-      </tr>
-      <tr>
-        <td>Alan</td>
-        <td>Jellybean</td>
-        <td>$3.76</td>
-      </tr>
-      <tr>
-        <td>Jonathan</td>
-        <td>Lollipop</td>
-        <td>$7.00</td>
+      <tr v-for="(el, idx) in getAktsList" :key="idx">
+        <td>{{ idx + 1 }}</td>
+        <td>{{ el.object }}</td>
+        <td>{{ el.numberAkt }}</td>
+        <td>{{ el.dateCreateAkt }}</td>
       </tr>
     </tbody>
   </table>
 </template>
 
 <script>
+import firebase from "firebase/app";
+import "firebase/database";
+import "firebase/auth";
+
 export default {
   name: "DashBoard",
 
@@ -41,17 +36,33 @@ export default {
     };
   },
 
-  mounted() {
+  async created() {
+    const db = firebase.database();
+    await db
+      .ref(`users/${firebase.auth().currentUser.uid}`)
+      .on("value", async (snapshot) => {
+        const data = snapshot.val();
+        localStorage.setItem("AKT_PGES_USER", JSON.stringify(data));
+      });
+    await db
+      .ref(`akts/${firebase.auth().currentUser.uid}`)
+      .on("value", async (snapshot) => {
+        const data = snapshot.val();
+        localStorage.setItem("AKT_PGES_AKTS", JSON.stringify(data));
+      });
     this.akts = JSON.parse(localStorage.getItem("AKT_PGES_AKTS"));
   },
 
   computed: {
-    getYearArray() {
+    getAktsList() {
       if (this.akts) {
-        return Object.keys(this.akts);
-      } else {
-        return null;
+        return Object.values(...Object.values(this.akts));
       }
+      return null;
+    },
+
+    getAktsValue() {
+      return 1;
     },
   },
 };

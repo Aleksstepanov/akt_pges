@@ -70,7 +70,6 @@ export default {
 
   created() {
     this.akts = JSON.parse(localStorage.getItem("AKT_PGES_AKTS"));
-    console.log(this.akts);
     this.user = JSON.parse(localStorage.getItem("AKT_PGES_USER"));
   },
 
