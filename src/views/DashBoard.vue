@@ -94,6 +94,13 @@ export default {
         .database()
         .ref(`akts/${firebase.auth().currentUser.uid}/${RecordYear}/${number}`)
         .remove();
+      this.quantity -= 1;
+      await firebase
+        .database()
+        .ref(`users/${firebase.auth().currentUser.uid}`)
+        .update({
+          quantity: this.quantity.toString(),
+        });
       await firebase
         .database()
         .ref(`akts/${firebase.auth().currentUser.uid}/${RecordYear}`)
@@ -102,8 +109,6 @@ export default {
           if (data) {
             this.akts[RecordYear] = data;
           } else this.akts[RecordYear] = null;
-          console.log(data);
-          console.log(this.akts);
         });
     },
   },

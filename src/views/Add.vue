@@ -24,7 +24,7 @@
         <button type="submit" class="col s3 btn offset-s1">Добавить</button>
       </div>
       <div class="row" v-if="createRecord">
-        <h4>{{ showLastAkt }}</h4>
+        <h4>{{ numberAkt }}</h4>
       </div>
     </Form>
   </div>
@@ -67,6 +67,7 @@ export default {
       dateAkt: "",
       quantity: 0,
       datapicker: null,
+      numberAkt: null,
     };
   },
 
@@ -93,6 +94,9 @@ export default {
           this.quantity = +quantity;
         });
 
+      const { number_id, start_count, subdivision } = this.user;
+      const newNumberAkt = this.quantity === 0 ? start_count : this.lastAkt + 1;
+      this.numberAkt = `Д-${subdivision}-${number_id}-${new Date().getFullYear()}-${newNumberAkt}`;
       const newAkt = {
         dateCreateAkt: Intl.DateTimeFormat("ru-RU", {
           day: "2-digit",
@@ -111,7 +115,7 @@ export default {
           second: "2-digit",
         }).format(new Date()),
         object: values.new_akt,
-        numberAkt: this.number_akt,
+        numberAkt: this.numberAkt,
       };
 
       if (this.quantity === 0) {
@@ -176,22 +180,10 @@ export default {
     },
 
     lastAkt() {
+      console.log(
+        this.maxElem(this.stringToNumberOfArray(this.getArrayOfAkts))
+      );
       return this.maxElem(this.stringToNumberOfArray(this.getArrayOfAkts));
-    },
-
-    number_akt() {
-      const year = new Date().getFullYear();
-      const { number_id, start_count } = this.user;
-      const oldAkt = Number(start_count) + Number(this.quantity);
-      return `Д-ОЭПУЭ-${number_id}-${year}-${oldAkt}`;
-    },
-
-    showLastAkt() {
-      const year = new Date().getFullYear();
-      const { number_id, start_count } = this.user;
-      return `Д-ОЭПУЭ-${number_id}-${year}-${
-        Number(start_count) + Number(this.quantity)
-      }`;
     },
   },
 
