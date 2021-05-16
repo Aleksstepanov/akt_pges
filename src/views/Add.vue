@@ -24,7 +24,7 @@
         <button type="submit" class="col s3 btn offset-s1">Добавить</button>
       </div>
       <div class="row" v-if="createRecord">
-        <h4>{{ number_akt }}</h4>
+        <h4>{{ showLastAkt }}</h4>
       </div>
     </Form>
   </div>
@@ -114,9 +114,6 @@ export default {
         numberAkt: this.number_akt,
       };
 
-      console.log(this.dateAkt);
-      this.createRecord = true;
-
       if (this.quantity === 0) {
         await firebase
           .database()
@@ -146,6 +143,7 @@ export default {
         localStorage.setItem("AKT_PGES_AKTS", JSON.stringify(this.akts));
       }
       this.quantity += 1;
+      this.createRecord = true;
       await firebase
         .database()
         .ref(`users/${firebase.auth().currentUser.uid}`)
@@ -189,8 +187,13 @@ export default {
       if (this.quantity === 0) {
         return `Д-ОЭПУЭ-${number_id}-${year}-${oldAkt}`;
       } else {
-        return `Д-ОЭПУЭ-${number_id}-${year}-${oldAkt + 1}`;
+        return `Д-ОЭПУЭ-${number_id}-${year}-${oldAkt}`;
       }
+    },
+
+    showLastAkt() {
+      const year = new Date().getFullYear();
+      return this.akts[year][this.lastAkt].numberAkt;
     },
   },
 
