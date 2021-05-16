@@ -6,7 +6,7 @@
       class="col s12"
     >
       <div class="row">
-        <div class="input-field col s6">
+        <div class="input-field col m6 s12">
           <Field placeholder="Объект" id="new_akt" type="text" name="new_akt" />
           <ErrorMessage name="new_akt" class="ErrorText" />
           <label for="new_akt">Новый акт</label>
@@ -15,12 +15,14 @@
       <div class="row">
         <input
           type="text"
-          class="datepicker col s2"
+          class="datepicker col m2 s6"
           ref="datepicker"
           name="date"
         />
         <ErrorMessage name="date" class="ErrorText" />
-        <button type="submit" class="col s3 btn offset-s1">Добавить</button>
+        <button type="submit" class="col m3 s5 btn offset-s1 offset-m1">
+          Добавить
+        </button>
       </div>
       <div class="row" v-if="createRecord">
         <h4>{{ numberAkt }}</h4>
