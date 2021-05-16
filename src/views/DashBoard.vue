@@ -87,15 +87,22 @@ export default {
       }
     },
 
-    deleteElemInAktsList(dataAttr) {
-      console.log(this.akts);
+    async deleteElemInAktsList(dataAttr) {
       const [, , , year, number] = dataAttr.split("-");
-      console.log(year, number);
       const RecordYear = Object.keys(this.akts).find((el) => el === year);
-      const newYearList = Object.keys(this.akts[RecordYear]).filter(
-        (ak) => ak !== number
-      );
-      console.log(newYearList);
+      await firebase
+        .database()
+        .ref(`akts/${firebase.auth().currentUser.uid}/${RecordYear}/${number}`)
+        .remove();
+      await firebase
+        .database()
+        .ref(`akts/${firebase.auth().currentUser.uid}/${RecordYear}`)
+        .on("value", async (snaphot) => {
+          const data = await snaphot.val();
+          this.akts[RecordYear] = data;
+          console.log(data);
+          console.log(this.akts);
+        });
     },
   },
 };
