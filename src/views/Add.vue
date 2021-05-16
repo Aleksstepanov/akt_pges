@@ -18,7 +18,6 @@
           class="datepicker col s2"
           ref="datepicker"
           name="date"
-          v-model="dateAkt"
         />
         <ErrorMessage name="date" class="ErrorText" />
         <button type="submit" class="col s3 btn offset-s1">Добавить</button>
@@ -85,6 +84,7 @@ export default {
 
   methods: {
     async btnAddClickHandler(values) {
+      console.log(this.datapicker.date);
       await firebase
         .database()
         .ref(`users/${firebase.auth().currentUser.uid}`)
@@ -102,10 +102,7 @@ export default {
           day: "2-digit",
           month: "long",
           year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-        }).format(this.dateAkt),
+        }).format(this.datapicker.date),
         dateCreateRecord: Intl.DateTimeFormat("ru-RU", {
           day: "2-digit",
           month: "long",
@@ -180,9 +177,6 @@ export default {
     },
 
     lastAkt() {
-      console.log(
-        this.maxElem(this.stringToNumberOfArray(this.getArrayOfAkts))
-      );
       return this.maxElem(this.stringToNumberOfArray(this.getArrayOfAkts));
     },
   },
