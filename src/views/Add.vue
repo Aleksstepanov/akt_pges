@@ -183,17 +183,15 @@ export default {
       const year = new Date().getFullYear();
       const { number_id, start_count } = this.user;
       const oldAkt = Number(start_count) + Number(this.quantity);
-      console.log(oldAkt);
-      if (this.quantity === 0) {
-        return `Д-ОЭПУЭ-${number_id}-${year}-${oldAkt}`;
-      } else {
-        return `Д-ОЭПУЭ-${number_id}-${year}-${oldAkt}`;
-      }
+      return `Д-ОЭПУЭ-${number_id}-${year}-${oldAkt}`;
     },
 
     showLastAkt() {
       const year = new Date().getFullYear();
-      return this.akts[year][this.lastAkt].numberAkt;
+      const { number_id, start_count } = this.user;
+      return `Д-ОЭПУЭ-${number_id}-${year}-${
+        Number(start_count) + Number(this.quantity)
+      }`;
     },
   },
 

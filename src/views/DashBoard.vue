@@ -99,7 +99,9 @@ export default {
         .ref(`akts/${firebase.auth().currentUser.uid}/${RecordYear}`)
         .on("value", async (snaphot) => {
           const data = await snaphot.val();
-          this.akts[RecordYear] = data;
+          if (data) {
+            this.akts[RecordYear] = data;
+          } else this.akts[RecordYear] = null;
           console.log(data);
           console.log(this.akts);
         });
