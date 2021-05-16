@@ -8,6 +8,7 @@
         <th>Наименование объекта</th>
         <th>Номер акта</th>
         <th>Дата составления</th>
+        <th>Удалить</th>
       </tr>
     </thead>
 
@@ -17,6 +18,11 @@
         <td>{{ el.object }}</td>
         <td>{{ el.numberAkt }}</td>
         <td>{{ el.dateCreateAkt }}</td>
+        <td>
+          <button @click="deleteClickHanlder" class="btn" :data="el.numberAkt">
+            <i class="material-icons">delete</i>
+          </button>
+        </td>
       </tr>
     </tbody>
   </table>
@@ -68,6 +74,28 @@ export default {
 
     getAktsValue() {
       return 1;
+    },
+  },
+
+  methods: {
+    deleteClickHanlder(event) {
+      const objDOM = event.target;
+      if (objDOM.parentNode.className === "btn") {
+        this.deleteElemInAktsList(objDOM.parentNode.getAttribute("data"));
+      } else {
+        this.deleteElemInAktsList(objDOM.getAttribute("data"));
+      }
+    },
+
+    deleteElemInAktsList(dataAttr) {
+      console.log(this.akts);
+      const [, , , year, number] = dataAttr.split("-");
+      console.log(year, number);
+      const RecordYear = Object.keys(this.akts).find((el) => el === year);
+      const newYearList = Object.keys(this.akts[RecordYear]).filter(
+        (ak) => ak !== number
+      );
+      console.log(newYearList);
     },
   },
 };
