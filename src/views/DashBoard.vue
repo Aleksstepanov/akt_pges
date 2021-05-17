@@ -13,8 +13,8 @@
     </thead>
 
     <tbody>
-      <tr v-for="(el, idx) in getAktsList" :key="idx">
-        <td>{{ idx + 1 }}</td>
+      <tr v-for="(el, idx) in paginateData" :key="idx">
+        <td>{{ idx + 1 + this.page * this.size }}</td>
         <td>{{ el.object }}</td>
         <td>{{ el.numberAkt }}</td>
         <td>{{ el.dateCreateAkt }}</td>
@@ -26,6 +26,27 @@
       </tr>
     </tbody>
   </table>
+  <ul class="pagination">
+    <li class="waves-effect" :class="{ disabled: page === 0 }">
+      <a href="#!" @click="prevPage"
+        ><i class="material-icons">chevron_left</i></a
+      >
+    </li>
+    <li
+      v-for="(link, idx) in pageCount"
+      :key="idx"
+      :class="page === idx ? 'active orange darken-1' : 'waves-effect'"
+      @click="page = idx"
+    >
+      <a href="#">{{ idx }}</a>
+    </li>
+
+    <li class="waves-effect" :class="{ disabled: page >= pageCount - 1 }">
+      <a @click="nextPage" href="#!"
+        ><i class="material-icons">chevron_right</i></a
+      >
+    </li>
+  </ul>
 </template>
 
 <script>
@@ -41,6 +62,10 @@ export default {
       akts: null,
       quantity: 0,
       isLoading: false,
+      page: 0,
+      filter: "",
+      hasNextPage: true,
+      size: 5,
     };
   },
 
@@ -72,8 +97,17 @@ export default {
       return null;
     },
 
-    getAktsValue() {
-      return 1;
+    pageCount() {
+      if (this.akts) {
+        return Math.ceil(this.getAktsList.length / this.size);
+      }
+      return null;
+    },
+
+    paginateData() {
+      const start = this.page * this.size;
+      const end = start + this.size;
+      return this.getAktsList.slice(start, end);
     },
   },
 
@@ -110,6 +144,39 @@ export default {
             this.akts[RecordYear] = data;
           } else this.akts[RecordYear] = null;
         });
+    },
+
+    nextPage() {
+      if (this.page < this.pageCount - 1) {
+        this.page += 1;
+      }
+    },
+
+    prevPage() {
+      if (this.page !== 0) {
+        this.page -= 1;
+      }
+    },
+  },
+
+  watch: {
+    filter() {
+      this.page = 1;
+      const { pathname } = window.location;
+      window.history.pushState(
+        null,
+        document.title,
+        `${pathname}?filter=${this.filter}&page=${this.page}`
+      );
+    },
+
+    page() {
+      const { pathname } = window.location;
+      window.history.pushState(
+        null,
+        document.title,
+        `${pathname}?filter=${this.filter}&page=${this.page}`
+      );
     },
   },
 };

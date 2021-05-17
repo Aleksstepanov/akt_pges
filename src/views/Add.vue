@@ -68,9 +68,6 @@ export default {
       quantity: 0,
       datapicker: null,
       numberAkt: null,
-      page: 1,
-      filter: "",
-      hasNextPage: true,
     };
   },
 
@@ -182,27 +179,6 @@ export default {
 
     lastAkt() {
       return this.maxElem(this.stringToNumberOfArray(this.getArrayOfAkts));
-    },
-  },
-
-  watch: {
-    filter() {
-      this.page = 1;
-      const { pathname } = window.location;
-      window.history.pushState(
-        null,
-        document.title,
-        `${pathname}?filter=${this.filter}&page=${this.page}`
-      );
-    },
-
-    page() {
-      const { pathname } = window.location;
-      window.history.pushState(
-        null,
-        document.title,
-        `${pathname}?filter=${this.filter}&page=${this.page}`
-      );
     },
   },
 
