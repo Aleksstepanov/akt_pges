@@ -1,5 +1,36 @@
 <template>
-  <ul id="dropdown1" class="dropdown-content orange lighten-3">
+  <nav>
+    <a href="#" data-target="slide-out" class="sidenav-trigger"
+      ><i class="material-icons">menu</i></a
+    >
+    <div class="nav-wrapper orange darken-1">
+      <a href="#" class="logo black-text">{{ date }}</a>
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <li>
+          <router-link to="/home/profile" class="black-text">{{
+            user
+          }}</router-link>
+        </li>
+        <li class="divider"></li>
+        <li>
+          <router-link to="/home/dashboard" class="black-text"
+            >Мои акты</router-link
+          >
+        </li>
+        <li>
+          <router-link to="/home/add" class="black-text"
+            >Добавить акт</router-link
+          >
+        </li>
+        <li>
+          <router-link to="/login" class="black-text" @click="ExitClickHandler"
+            >Выход</router-link
+          >
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <ul id="slide-out" class="sidenav orange darken-1" ref="sidenav">
     <li>
       <router-link to="/home/profile" class="black-text">{{
         user
@@ -20,22 +51,6 @@
       >
     </li>
   </ul>
-  <nav>
-    <div class="nav-wrapper orange darken-1">
-      <a href="#!" class="logo">{{ date }}</a>
-      <ul class="right">
-        <li>
-          <a
-            class="dropdown-trigger"
-            href="#!"
-            data-target="dropdown1"
-            ref="dropdown"
-            ><i class="material-icons right">arrow_drop_down_circle</i>
-          </a>
-        </li>
-      </ul>
-    </div>
-  </nav>
 </template>
 
 <script>
@@ -51,7 +66,7 @@ export default {
       user: "",
       date: new Date(),
       interval: null,
-      dropdown: null,
+      sidenav: null,
     };
   },
 
@@ -70,10 +85,7 @@ export default {
         second: "2-digit",
       }).format(new Date());
     }, 1000);
-    this.dropdown = M.Dropdown.init(this.$refs.dropdown, {
-      closeOnClick: false,
-      hover: true,
-    });
+    this.sidenav = M.Sidenav.init(this.$refs.sidenav);
   },
 
   methods: {
@@ -89,8 +101,8 @@ export default {
 
   unmounted() {
     clearInterval(this.interval);
-    if (this.dropdown && this.dropdown.destroy) {
-      this.dropdown.destroy();
+    if (this.sidenav && this.sidenav.destroy) {
+      this.sidenav.destroy();
     }
   },
 };
