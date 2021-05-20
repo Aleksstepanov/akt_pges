@@ -13,13 +13,13 @@
               class="col s12"
             >
               <div class="row">
-                <div class="input-field col s6">
+                <div class="input-field col s12">
                   <i class="material-icons prefix">person</i>
                   <Field id="last_name" type="text" name="lastName" />
                   <ErrorMessage name="lastName" class="ErrorText" />
                   <label for="last_name">Last Name</label>
                 </div>
-                <div class="input-field col s6">
+                <div class="input-field col s12">
                   <i class="material-icons prefix">perm_identity</i>
                   <Field id="first_name" type="text" name="firstName" />
                   <ErrorMessage name="firstName" class="ErrorText" />
@@ -27,25 +27,25 @@
                 </div>
               </div>
               <div class="row">
-                <div class="input-field col s6">
+                <div class="input-field col s12">
                   <i class="material-icons prefix">email</i>
                   <Field id="icon_prefix" type="email" name="email" />
                   <ErrorMessage name="email" class="ErrorText" />
                   <label for="icon_prefix">Email</label>
                 </div>
-                <div class="input-field col s6">
+                <div class="input-field col s12">
                   <i class="material-icons prefix">https</i>
                   <Field id="icon_telephone" type="password" name="password" />
                   <ErrorMessage name="password" class="ErrorText" />
                   <label for="icon_telephone">Password</label>
                 </div>
-                <div class="input-field col m4 s12">
+                <div class="input-field col s12">
                   <i class="material-icons prefix">directions_run</i>
                   <Field id="start_count" type="text" name="start_count" />
                   <ErrorMessage name="start_count" class="ErrorText" />
                   <label for="start_count">Начало отсчета</label>
                 </div>
-                <div class="input-field col m4 s12">
+                <div class="input-field col s12">
                   <i class="material-icons prefix">domain</i>
                   <select
                     ref="select"
@@ -58,7 +58,7 @@
                   </select>
                   <label>Подразделение</label>
                 </div>
-                <div class="input-field col m4 s12">
+                <div class="input-field col s12">
                   <i class="material-icons prefix">star_border</i>
                   <Field id="number_id" type="text" name="numberID" />
                   <ErrorMessage name="numberID" class="ErrorText" />
@@ -71,7 +71,7 @@
                     <i class="material-icons right">keyboard_backspace</i>
                   </router-link>
                 </div>
-                <div class="col s3 offset-s4 m3 offset-m6">
+                <div class="col s3 offset-s6">
                   <button
                     class="btn waves-effect waves-light"
                     type="submit"
