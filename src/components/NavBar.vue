@@ -32,21 +32,26 @@
   </nav>
   <ul id="slide-out" class="sidenav orange darken-1" ref="sidenav">
     <li>
-      <router-link to="/home/profile" class="black-text">{{
+      <router-link to="/home/profile" class="black-text sidenav-close">{{
         user
       }}</router-link>
     </li>
     <li class="divider"></li>
     <li>
-      <router-link to="/home/dashboard" class="black-text"
+      <router-link to="/home/dashboard" class="black-text sidenav-close"
         >Мои акты</router-link
       >
     </li>
     <li>
-      <router-link to="/home/add" class="black-text">Добавить акт</router-link>
+      <router-link to="/home/add" class="black-text sidenav-close"
+        >Добавить акт</router-link
+      >
     </li>
     <li>
-      <router-link to="/login" class="black-text" @click="ExitClickHandler"
+      <router-link
+        to="/login"
+        class="black-text sidenav-close"
+        @click="ExitClickHandler"
         >Выход</router-link
       >
     </li>
