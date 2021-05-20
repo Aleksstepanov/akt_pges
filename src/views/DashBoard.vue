@@ -1,95 +1,93 @@
 <template>
-  <div class="preloader-wrapper big active">
-    <div class="spinner-layer spinner-red">
-      <div class="circle-clipper left">
-        <div class="circle"></div>
-      </div>
-      <div class="gap-patch">
-        <div class="circle"></div>
-      </div>
-      <div class="circle-clipper right">
-        <div class="circle"></div>
+  <Loader v-if="showLoader" />
+  <template v-if="!showLoader">
+    <div class="row">
+      <h4 class="col s2">Мои акты</h4>
+      <div class="input-field col s6 offset-s4">
+        <input placeholder="Поиск" id="filterd" type="text" v-model="filter" />
+        <label for="filtered">Поиск</label>
       </div>
     </div>
-  </div>
-  <div class="row">
-    <h4 class="col s2">Мои акты</h4>
-    <div class="input-field col s6 offset-s4">
-      <input placeholder="Поиск" id="filterd" type="text" v-model="filter" />
-      <label for="filtered">Поиск</label>
-    </div>
-  </div>
-  <hr />
-  <table v-if="isLoading">
-    <thead>
-      <tr>
-        <th>№ п/п</th>
-        <th>Наименование объекта</th>
-        <th>Номер акта</th>
-        <th>Дата составления</th>
-        <th>Удалить</th>
-      </tr>
-    </thead>
+    <hr />
+    <table>
+      <thead>
+        <tr>
+          <th>№ п/п</th>
+          <th>Наименование объекта</th>
+          <th>Номер акта</th>
+          <th>Дата составления</th>
+          <th>Удалить</th>
+        </tr>
+      </thead>
 
-    <tbody v-if="akts">
-      <tr v-for="(el, idx) in paginateData" :key="idx">
-        <td>{{ idx + 1 + this.page * this.size }}</td>
-        <td>{{ el.object }}</td>
-        <td>{{ el.numberAkt }}</td>
-        <td>{{ el.dateCreateAkt }}</td>
-        <td>
-          <button @click="deleteClickHanlder" class="btn" :data="el.numberAkt">
-            <i class="material-icons">delete</i>
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <ul class="pagination" v-if="getAktsList.length > size">
-    <li class="waves-effect" :class="{ disabled: page === 0 }">
-      <a href="#!" @click="prevPage"
-        ><i class="material-icons">chevron_left</i></a
+      <tbody v-if="akts">
+        <tr v-for="(el, idx) in paginateData" :key="idx">
+          <td>{{ idx + 1 + this.page * this.size }}</td>
+          <td>{{ el.object }}</td>
+          <td>{{ el.numberAkt }}</td>
+          <td>{{ el.dateCreateAkt }}</td>
+          <td>
+            <button
+              @click="deleteClickHanlder"
+              class="btn"
+              :data="el.numberAkt"
+            >
+              <i class="material-icons">delete</i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <ul class="pagination" v-if="getAktsList.length > size">
+      <li class="waves-effect" :class="{ disabled: page === 0 }">
+        <a href="#!" @click="prevPage"
+          ><i class="material-icons">chevron_left</i></a
+        >
+      </li>
+      <li
+        v-for="(link, idx) in pageCount"
+        :key="idx"
+        :class="page === idx ? 'active orange darken-1' : 'waves-effect'"
+        @click="page = idx"
       >
-    </li>
-    <li
-      v-for="(link, idx) in pageCount"
-      :key="idx"
-      :class="page === idx ? 'active orange darken-1' : 'waves-effect'"
-      @click="page = idx"
-    >
-      <a href="#">{{ idx }}</a>
-    </li>
+        <a href="#">{{ idx }}</a>
+      </li>
 
-    <li class="waves-effect" :class="{ disabled: page >= pageCount - 1 }">
-      <a @click="nextPage" href="#!"
-        ><i class="material-icons">chevron_right</i></a
-      >
-    </li>
-  </ul>
+      <li class="waves-effect" :class="{ disabled: page >= pageCount - 1 }">
+        <a @click="nextPage" href="#!"
+          ><i class="material-icons">chevron_right</i></a
+        >
+      </li>
+    </ul>
+  </template>
 </template>
 
 <script>
 import firebase from "firebase/app";
 import "firebase/database";
 import "firebase/auth";
+import Loader from "@/components/Loader.vue";
 
 export default {
   name: "DashBoard",
+
+  components: {
+    Loader,
+  },
 
   data() {
     return {
       akts: null,
       quantity: 0,
-      isLoading: false,
       page: 0,
       filter: "",
       hasNextPage: true,
       size: 5,
+      isLoading: true,
     };
   },
 
   async created() {
-    this.isLoading = false;
     const db = firebase.database();
     try {
       await db
@@ -106,7 +104,7 @@ export default {
           const data = await snapshot.val();
           localStorage.setItem("AKT_PGES_AKTS", JSON.stringify(data));
           this.akts = data;
-          this.isLoading = true;
+          this.isLoading = false;
         });
     } catch (e) {
       console.log(e);
@@ -115,26 +113,16 @@ export default {
 
   computed: {
     getAktsList() {
-      console.log(this.akts);
-      if (this.akts) {
-        return Object.values(...Object.values(this.akts));
-      }
-      return null;
+      return Object.values(...Object.values(this.akts));
     },
 
     getReverseAktList() {
-      if (this.getAktsList) {
-        const reverseAktList = this.getAktsList;
-        return reverseAktList.reverse();
-      }
-      return null;
+      const reverseAktList = this.getAktsList;
+      return reverseAktList.reverse();
     },
 
     pageCount() {
-      if (this.akts) {
-        return Math.ceil(this.getAktsList.length / this.size);
-      }
-      return null;
+      return Math.ceil(this.getAktsList.length / this.size);
     },
 
     paginateData() {
@@ -150,6 +138,10 @@ export default {
         return filterAkts.slice(start, end);
       } else return [];
     },
+
+    showLoader() {
+      return this.isLoading;
+    },
   },
 
   methods: {
@@ -163,28 +155,36 @@ export default {
     },
 
     async deleteElemInAktsList(dataAttr) {
+      this.isLoading = true;
       const [, , , year, number] = dataAttr.split("-");
       const RecordYear = Object.keys(this.akts).find((el) => el === year);
-      await firebase
-        .database()
-        .ref(`akts/${firebase.auth().currentUser.uid}/${RecordYear}/${number}`)
-        .remove();
-      this.quantity -= 1;
-      await firebase
-        .database()
-        .ref(`users/${firebase.auth().currentUser.uid}`)
-        .update({
-          quantity: this.quantity.toString(),
-        });
-      await firebase
-        .database()
-        .ref(`akts/${firebase.auth().currentUser.uid}/${RecordYear}`)
-        .on("value", async (snaphot) => {
-          const data = await snaphot.val();
-          if (data) {
-            this.akts[RecordYear] = data;
-          } else this.akts[RecordYear] = null;
-        });
+      try {
+        await firebase
+          .database()
+          .ref(
+            `akts/${firebase.auth().currentUser.uid}/${RecordYear}/${number}`
+          )
+          .remove();
+        this.quantity -= 1;
+        await firebase
+          .database()
+          .ref(`users/${firebase.auth().currentUser.uid}`)
+          .update({
+            quantity: this.quantity.toString(),
+          })
+          .then(() => (this.isLoading = false));
+        await firebase
+          .database()
+          .ref(`akts/${firebase.auth().currentUser.uid}/${RecordYear}`)
+          .on("value", async (snaphot) => {
+            const data = await snaphot.val();
+            if (data) {
+              this.akts[RecordYear] = data;
+            } else this.akts[RecordYear] = null;
+          });
+      } catch (err) {
+        console.log(err);
+      }
     },
 
     nextPage() {
