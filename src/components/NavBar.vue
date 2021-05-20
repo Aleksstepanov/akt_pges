@@ -14,7 +14,11 @@
     <li>
       <router-link to="/home/add" class="black-text">Добавить акт</router-link>
     </li>
-    <li><a href="#!" class="black-text" @click="ExitClickHandler">Выход</a></li>
+    <li>
+      <router-link to="/login" class="black-text" @click="ExitClickHandler"
+        >Выход</router-link
+      >
+    </li>
   </ul>
   <nav>
     <div class="nav-wrapper orange darken-1">
@@ -78,9 +82,8 @@ export default {
         .auth()
         .signOut()
         .then(() => {
-          this.$router.push("/login");
+          M.toast({ html: "Вы вышли из системы" });
         });
-      M.toast({ html: "Вы вышли из системы" });
     },
   },
 
