@@ -71,7 +71,7 @@ export default {
       quantity: 0,
       datapicker: null,
       numberAkt: null,
-      isLoader: true,
+      isLoader: false,
     };
   },
 
