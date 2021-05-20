@@ -71,7 +71,7 @@
                     <i class="material-icons right">keyboard_backspace</i>
                   </router-link>
                 </div>
-                <div class="col s3 offset-s6">
+                <div class="col s3 offset-s4 m3 offset-m5">
                   <button
                     class="btn waves-effect waves-light"
                     type="submit"

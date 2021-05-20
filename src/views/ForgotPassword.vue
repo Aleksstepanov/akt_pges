@@ -25,7 +25,7 @@
                       <i class="material-icons right">keyboard_backspace</i>
                     </router-link>
                   </div>
-                  <div class="col s3 offset-s3">
+                  <div class="col s3">
                     <button
                       class="btn waves-effect waves-light"
                       type="submit"
