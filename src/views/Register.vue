@@ -39,13 +39,13 @@
                   <ErrorMessage name="password" class="ErrorText" />
                   <label for="icon_telephone">Password</label>
                 </div>
-                <div class="input-field col s4">
+                <div class="input-field col m4 s12">
                   <i class="material-icons prefix">directions_run</i>
                   <Field id="start_count" type="text" name="start_count" />
                   <ErrorMessage name="start_count" class="ErrorText" />
                   <label for="start_count">Начало отсчета</label>
                 </div>
-                <div class="input-field col s4">
+                <div class="input-field col m4 s12">
                   <i class="material-icons prefix">domain</i>
                   <select
                     ref="select"
@@ -58,7 +58,7 @@
                   </select>
                   <label>Подразделение</label>
                 </div>
-                <div class="input-field col s4">
+                <div class="input-field col m4 s12">
                   <i class="material-icons prefix">star_border</i>
                   <Field id="number_id" type="text" name="numberID" />
                   <ErrorMessage name="numberID" class="ErrorText" />

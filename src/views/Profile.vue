@@ -33,7 +33,6 @@ export default {
     const { displayName, email } = await firebase.auth().currentUser;
     this.userName = displayName;
     this.userEmail = email;
-    console.log(firebase.auth().currentUser);
   },
 };
 </script>

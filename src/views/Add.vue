@@ -1,5 +1,6 @@
 <template>
-  <div class="row">
+  <Loader v-if="showLoader" />
+  <div v-else class="row">
     <Form
       @submit="btnAddClickHandler"
       :validation-schema="schema"
@@ -39,6 +40,7 @@ import datapickerConfig from "../config/datapicker.config.js";
 import firebase from "firebase/app";
 import "firebase/database";
 import "firebase/auth";
+import Loader from "@/components/Loader.vue";
 
 export default {
   name: "Add",
@@ -47,6 +49,7 @@ export default {
     Field,
     Form,
     ErrorMessage,
+    Loader,
   },
 
   setup() {
@@ -68,6 +71,7 @@ export default {
       quantity: 0,
       datapicker: null,
       numberAkt: null,
+      isLoader: true,
     };
   },
 
@@ -178,6 +182,10 @@ export default {
 
     lastAkt() {
       return this.maxElem(this.stringToNumberOfArray(this.getArrayOfAkts));
+    },
+
+    showLoader() {
+      return this.isLoader;
     },
   },
 
