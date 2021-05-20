@@ -9,56 +9,58 @@
       </div>
     </div>
     <hr />
-    <table>
-      <thead>
-        <tr>
-          <th>№ п/п</th>
-          <th>Наименование объекта</th>
-          <th>Номер акта</th>
-          <th>Дата составления</th>
-          <th>Удалить</th>
-        </tr>
-      </thead>
+    <template v-if="akts">
+      <table>
+        <thead>
+          <tr>
+            <th>№ п/п</th>
+            <th>Наименование объекта</th>
+            <th>Номер акта</th>
+            <th>Дата составления</th>
+            <th>Удалить</th>
+          </tr>
+        </thead>
 
-      <tbody v-if="akts">
-        <tr v-for="(el, idx) in paginateData" :key="idx">
-          <td>{{ idx + 1 + this.page * this.size }}</td>
-          <td>{{ el.object }}</td>
-          <td>{{ el.numberAkt }}</td>
-          <td>{{ el.dateCreateAkt }}</td>
-          <td>
-            <button
-              @click="deleteClickHanlder"
-              class="btn"
-              :data="el.numberAkt"
-            >
-              <i class="material-icons">delete</i>
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <ul class="pagination" v-if="getAktsList.length > size">
-      <li class="waves-effect" :class="{ disabled: page === 0 }">
-        <a href="#!" @click="prevPage"
-          ><i class="material-icons">chevron_left</i></a
+        <tbody v-if="akts">
+          <tr v-for="(el, idx) in paginateData" :key="idx">
+            <td>{{ idx + 1 + this.page * this.size }}</td>
+            <td>{{ el.object }}</td>
+            <td>{{ el.numberAkt }}</td>
+            <td>{{ el.dateCreateAkt }}</td>
+            <td>
+              <button
+                @click="deleteClickHanlder"
+                class="btn"
+                :data="el.numberAkt"
+              >
+                <i class="material-icons">delete</i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <ul class="pagination" v-if="getAktsList.length > size">
+        <li class="waves-effect" :class="{ disabled: page === 0 }">
+          <a href="#!" @click="prevPage"
+            ><i class="material-icons">chevron_left</i></a
+          >
+        </li>
+        <li
+          v-for="(link, idx) in pageCount"
+          :key="idx"
+          :class="page === idx ? 'active orange darken-1' : 'waves-effect'"
+          @click="page = idx"
         >
-      </li>
-      <li
-        v-for="(link, idx) in pageCount"
-        :key="idx"
-        :class="page === idx ? 'active orange darken-1' : 'waves-effect'"
-        @click="page = idx"
-      >
-        <a href="#">{{ idx }}</a>
-      </li>
+          <a href="#">{{ idx }}</a>
+        </li>
 
-      <li class="waves-effect" :class="{ disabled: page >= pageCount - 1 }">
-        <a @click="nextPage" href="#!"
-          ><i class="material-icons">chevron_right</i></a
-        >
-      </li>
-    </ul>
+        <li class="waves-effect" :class="{ disabled: page >= pageCount - 1 }">
+          <a @click="nextPage" href="#!"
+            ><i class="material-icons">chevron_right</i></a
+          >
+        </li>
+      </ul>
+    </template>
   </template>
 </template>
 
