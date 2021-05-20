@@ -85,7 +85,6 @@ export default {
 
   methods: {
     async btnAddClickHandler(values) {
-      console.log(this.datapicker.date);
       await firebase
         .database()
         .ref(`users/${firebase.auth().currentUser.uid}`)

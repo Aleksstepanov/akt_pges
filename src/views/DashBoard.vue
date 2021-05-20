@@ -1,5 +1,24 @@
 <template>
-  <h4>Мои акты</h4>
+  <div class="preloader-wrapper big active">
+    <div class="spinner-layer spinner-red">
+      <div class="circle-clipper left">
+        <div class="circle"></div>
+      </div>
+      <div class="gap-patch">
+        <div class="circle"></div>
+      </div>
+      <div class="circle-clipper right">
+        <div class="circle"></div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <h4 class="col s2">Мои акты</h4>
+    <div class="input-field col s6 offset-s4">
+      <input placeholder="Поиск" id="filterd" type="text" v-model="filter" />
+      <label for="filtered">Поиск</label>
+    </div>
+  </div>
   <hr />
   <table v-if="isLoading">
     <thead>
@@ -12,7 +31,7 @@
       </tr>
     </thead>
 
-    <tbody>
+    <tbody v-if="akts">
       <tr v-for="(el, idx) in paginateData" :key="idx">
         <td>{{ idx + 1 + this.page * this.size }}</td>
         <td>{{ el.object }}</td>
@@ -26,7 +45,7 @@
       </tr>
     </tbody>
   </table>
-  <ul class="pagination">
+  <ul class="pagination" v-if="getAktsList.length > size">
     <li class="waves-effect" :class="{ disabled: page === 0 }">
       <a href="#!" @click="prevPage"
         ><i class="material-icons">chevron_left</i></a
@@ -70,29 +89,43 @@ export default {
   },
 
   async created() {
+    this.isLoading = false;
     const db = firebase.database();
-    await db
-      .ref(`users/${firebase.auth().currentUser.uid}`)
-      .on("value", async (snapshot) => {
-        const data = await snapshot.val();
-        const { quantity } = await data;
-        this.quantity = quantity;
-        localStorage.setItem("AKT_PGES_USER", JSON.stringify(data));
-      });
-    await db
-      .ref(`akts/${firebase.auth().currentUser.uid}`)
-      .on("value", async (snapshot) => {
-        const data = await snapshot.val();
-        localStorage.setItem("AKT_PGES_AKTS", JSON.stringify(data));
-        this.akts = data;
-        this.isLoading = true;
-      });
+    try {
+      await db
+        .ref(`users/${firebase.auth().currentUser.uid}`)
+        .on("value", async (snapshot) => {
+          const data = await snapshot.val();
+          const { quantity } = await data;
+          this.quantity = quantity;
+          localStorage.setItem("AKT_PGES_USER", JSON.stringify(data));
+        });
+      await db
+        .ref(`akts/${firebase.auth().currentUser.uid}`)
+        .on("value", async (snapshot) => {
+          const data = await snapshot.val();
+          localStorage.setItem("AKT_PGES_AKTS", JSON.stringify(data));
+          this.akts = data;
+          this.isLoading = true;
+        });
+    } catch (e) {
+      console.log(e);
+    }
   },
 
   computed: {
     getAktsList() {
+      console.log(this.akts);
       if (this.akts) {
         return Object.values(...Object.values(this.akts));
+      }
+      return null;
+    },
+
+    getReverseAktList() {
+      if (this.getAktsList) {
+        const reverseAktList = this.getAktsList;
+        return reverseAktList.reverse();
       }
       return null;
     },
@@ -105,9 +138,17 @@ export default {
     },
 
     paginateData() {
-      const start = this.page * this.size;
-      const end = start + this.size;
-      return this.getAktsList.slice(start, end);
+      if (this.akts) {
+        const start = this.page * this.size;
+        const end = start + this.size;
+        const filterAkts = this.getReverseAktList.filter((akt) => {
+          return (
+            akt.object.toUpperCase().includes(this.filter.toUpperCase()) ||
+            akt.numberAkt.toUpperCase().includes(this.filter.toUpperCase())
+          );
+        });
+        return filterAkts.slice(start, end);
+      } else return [];
     },
   },
 
@@ -161,7 +202,7 @@ export default {
 
   watch: {
     filter() {
-      this.page = 1;
+      this.page = 0;
       const { pathname } = window.location;
       window.history.pushState(
         null,
