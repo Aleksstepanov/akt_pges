@@ -17,6 +17,7 @@
             <th>Наименование объекта</th>
             <th>Номер акта</th>
             <th>Дата составления</th>
+            <td>Ред.</td>
             <th>Удалить</th>
           </tr>
         </thead>
@@ -27,6 +28,23 @@
             <td>{{ el.object }}</td>
             <td>{{ el.numberAkt }}</td>
             <td>{{ el.dateCreateAkt }}</td>
+            <td>
+              <button
+                @click="editClickHandler()"
+                data-target="modal1"
+                class="btn modal-trigger"
+                :data="el.numberAkt"
+                ref="modal"
+                v-if="!isEditing"
+              >
+                <i class="material-icons">border_color</i>
+              </button>
+              <Chips
+                v-if="isEditing"
+                @check="chipsCheckHandler(el)"
+                @clear="chpsClearHandler()"
+              />
+            </td>
             <td>
               <button
                 @click="deleteClickHanlder"
@@ -69,12 +87,14 @@ import firebase from "firebase/app";
 import "firebase/database";
 import "firebase/auth";
 import Loader from "@/components/Loader.vue";
+import Chips from "@/components/Chips.vue";
 
 export default {
   name: "DashBoard",
 
   components: {
     Loader,
+    Chips,
   },
 
   data() {
@@ -86,6 +106,7 @@ export default {
       hasNextPage: true,
       size: 5,
       isLoading: true,
+      isEditing: false,
     };
   },
 
@@ -200,6 +221,19 @@ export default {
         this.page -= 1;
       }
     },
+
+    editClickHandler() {
+      this.isEditing = true;
+    },
+
+    chipsCheckHandler(el) {
+      console.log(el);
+      this.isEditing = false;
+    },
+
+    chpsClearHandler() {
+      this.isEditing = false;
+    },
   },
 
   watch: {
@@ -225,4 +259,14 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+@media screen and (max-width: 600px) {
+  th,
+  td {
+    font-size: 10px;
+  }
+  h4 {
+    font-size: 1.5rem;
+  }
+}
+</style>
