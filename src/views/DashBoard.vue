@@ -28,10 +28,10 @@
             <td class="object">
               <input
                 :disabled="!el.editing"
-                :value="el.object"
                 id="disabled"
                 type="text"
                 class="input-table"
+                v-model="el.object"
               />
             </td>
             <td>{{ el.numberAkt }}</td>
