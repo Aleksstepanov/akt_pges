@@ -25,24 +25,32 @@
         <tbody v-if="akts">
           <tr v-for="(el, idx) in paginateData" :key="idx">
             <td>{{ idx + 1 + this.page * this.size }}</td>
-            <td>{{ el.object }}</td>
+            <td class="object">
+              <input
+                :disabled="!el.editing"
+                :value="el.object"
+                id="disabled"
+                type="text"
+                class="input-table"
+              />
+            </td>
             <td>{{ el.numberAkt }}</td>
             <td>{{ el.dateCreateAkt }}</td>
             <td>
               <button
-                @click="editClickHandler()"
+                @click="editClickHandler(el)"
                 data-target="modal1"
                 class="btn modal-trigger"
                 :data="el.numberAkt"
                 ref="modal"
-                v-if="!isEditing"
+                v-if="!el.editing"
               >
                 <i class="material-icons">border_color</i>
               </button>
               <Chips
-                v-if="isEditing"
+                v-if="el.editing"
                 @check="chipsCheckHandler(el)"
-                @clear="chpsClearHandler()"
+                @clear="chpsClearHandler(el)"
               />
             </td>
             <td>
@@ -127,6 +135,7 @@ export default {
           const data = await snapshot.val();
           localStorage.setItem("AKT_PGES_AKTS", JSON.stringify(data));
           this.akts = data;
+          this.getAktsList.forEach((akt) => (akt.editing = false));
           this.isLoading = false;
         });
     } catch (e) {
@@ -222,17 +231,16 @@ export default {
       }
     },
 
-    editClickHandler() {
-      this.isEditing = true;
+    editClickHandler(el) {
+      el.editing = true;
     },
 
     chipsCheckHandler(el) {
-      console.log(el);
-      this.isEditing = false;
+      el.editing = false;
     },
 
-    chpsClearHandler() {
-      this.isEditing = false;
+    chpsClearHandler(el) {
+      el.editing = false;
     },
   },
 
@@ -268,5 +276,9 @@ export default {
   h4 {
     font-size: 1.5rem;
   }
+}
+.object .input-table {
+  border: none !important;
+  color: inherit !important;
 }
 </style>
