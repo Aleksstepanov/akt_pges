@@ -56,6 +56,7 @@
             <td>
               <button
                 @click="deleteClickHanlder"
+                :disabled="!isEditing"
                 class="btn"
                 :data="el.numberAkt"
               >
@@ -116,6 +117,7 @@ export default {
       isLoading: true,
       isEditing: true,
       aktRecord: "",
+      datapicker: null,
     };
   },
 
@@ -292,12 +294,13 @@ export default {
   h4 {
     font-size: 1.5rem;
   }
+  .input-table {
+    font-size: 12px !important;
+  }
 }
 .object .input-table {
   border: none !important;
   color: inherit !important;
-  font-size: 12px !important;
-  /* vertical-align: middle; */
   align-items: center;
   justify-content: center;
   width: 100%;

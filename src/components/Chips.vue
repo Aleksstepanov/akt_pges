@@ -1,8 +1,8 @@
 <template>
-  <div class="chip" @click="checkClickHandler()">
+  <div class="btn" @click="checkClickHandler()">
     <i class="material-icons">check</i>
   </div>
-  <div class="chip" @click="clearChipHandler()">
+  <div class="btn" @click="clearChipHandler()">
     <i class="material-icons">clear</i>
   </div>
 </template>
@@ -25,8 +25,9 @@ export default {
 };
 </script>
 
-<style>
-.chip {
+<style scoped>
+.btn {
   cursor: pointer;
+  margin: 5px;
 }
 </style>
