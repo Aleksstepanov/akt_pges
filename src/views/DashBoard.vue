@@ -26,9 +26,8 @@
           <tr v-for="(el, idx) in paginateData" :key="idx">
             <td>{{ idx + 1 + this.page * this.size }}</td>
             <td class="object">
-              <input
+              <textarea
                 :disabled="!el.editing"
-                id="disabled"
                 type="text"
                 class="input-table"
                 v-model="el.object"
@@ -240,9 +239,16 @@ export default {
     },
 
     async chipsCheckHandler(el) {
+      const [, , , year, numberAkt] = el.numberAkt.split("-");
       this.isLoading = true;
       el.editing = false;
       this.isEditing = true;
+      await firebase
+        .database()
+        .ref(`akts/${firebase.auth().currentUser.uid}/${year}/${numberAkt}`)
+        .update({
+          object: el.object,
+        });
       this.isLoading = false;
     },
 
@@ -279,8 +285,9 @@ export default {
 <style>
 @media screen and (max-width: 600px) {
   th,
-  td {
-    font-size: 10px;
+  td,
+  tr {
+    font-size: 12px;
   }
   h4 {
     font-size: 1.5rem;
@@ -289,5 +296,11 @@ export default {
 .object .input-table {
   border: none !important;
   color: inherit !important;
+  font-size: 12px !important;
+  /* vertical-align: middle; */
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 </style>
