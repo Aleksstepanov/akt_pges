@@ -39,6 +39,7 @@
             <td>
               <button
                 @click="editClickHandler(el)"
+                :disabled="!isEditing"
                 data-target="modal1"
                 class="btn modal-trigger"
                 :data="el.numberAkt"
@@ -114,7 +115,8 @@ export default {
       hasNextPage: true,
       size: 5,
       isLoading: true,
-      isEditing: false,
+      isEditing: true,
+      aktRecord: "",
     };
   },
 
@@ -232,15 +234,22 @@ export default {
     },
 
     editClickHandler(el) {
+      this.isEditing = false;
       el.editing = true;
+      this.aktRecord = el.object;
     },
 
-    chipsCheckHandler(el) {
+    async chipsCheckHandler(el) {
+      this.isLoading = true;
       el.editing = false;
+      this.isEditing = true;
+      this.isLoading = false;
     },
 
     chpsClearHandler(el) {
       el.editing = false;
+      this.isEditing = true;
+      el.object = this.aktRecord;
     },
   },
 
